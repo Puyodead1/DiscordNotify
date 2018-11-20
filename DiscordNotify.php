@@ -37,11 +37,15 @@ class DiscordNotify extends PluginAbstract
         
         $obj = new stdClass();
         $obj->webhook_url = "";
+        $obj->webhook_username = "";
+        $obj->webhook_avatar = $server + "/view/img/favicon.png"
         return $obj;
     }
     public function afterNewVideo($videos_id)
     {
+        //Get the data object
         $o = $this->getDataObject();
+
 		$users_id = Video::getOwner($videos_id);
 		$user = new User($users_id);
 		$username = $user->getNameIdentification();
@@ -50,7 +54,7 @@ class DiscordNotify extends PluginAbstract
 		$videoName = $video->getTitle();
 		$images = Video::getImageFromFilename($video->getFilename());
 		$videoThumbs = $images->thumbsJpg;
-                $videoLink = Video::getPermaLink($videos_id);
+        $videoLink = Video::getPermaLink($videos_id);
 		$videoDuration = $video->getDuration();
 		$videoDescription = $video->getDescription();
 		$url = $o->webhook_url;
@@ -63,11 +67,11 @@ $hookObject = json_encode([
     /*
      * The username shown in the message
      */
-    "username" => "PuyoTube",
+    "username" => $this->getDataObject()->webhook_username,
     /*
      * The image location for the senders image
      */
-    "avatar_url" => "https://puyodead1-development.me/view/img/favicon.png",
+    "avatar_url" => $this->getDataObject()->webhook_avatar,
     /*
      * Whether or not to read the message in Text-to-speech
      */
