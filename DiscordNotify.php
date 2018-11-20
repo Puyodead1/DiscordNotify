@@ -24,13 +24,24 @@ class DiscordNotify extends PluginAbstract
     {
         return array(
             'free',
-            'notify',
+            'notifications',
             'webhook'
         );
     }
-   
+	public function getPluginVersion() {
+        return "1.0";
+    }
+    public function getEmptyDataObject() {
+        global $global;
+        $server = parse_url($global['webSiteRootURL']);     
+        
+        $obj = new stdClass();
+        $obj->webhook_url = "";
+        return $obj;
+    }
     public function afterNewVideo($videos_id)
     {
+        $o = $this->getDataObject();
 		$users_id = Video::getOwner($videos_id);
 		$user = new User($users_id);
 		$username = $user->getNameIdentification();
@@ -42,7 +53,7 @@ class DiscordNotify extends PluginAbstract
                 $videoLink = Video::getPermaLink($videos_id);
 		$videoDuration = $video->getDuration();
 		$videoDescription = $video->getDescription();
-		$url = "https://ptb.discordapp.com/api/webhooks/506907055442100230/DxI5fhYz0KcvRfN354mg87rbHCcT2Uzg9vF6mU-Kpad_KZsukNyW65VfbSD4RLSFIi9L";
+		$url = $o->webhook_url;
 
 $hookObject = json_encode([
     /*
